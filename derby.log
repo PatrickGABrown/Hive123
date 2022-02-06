@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun Feb 06 18:13:24 EST 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017e-d150-401e-000001e6ad78 
+on database directory /Users/patrickbrown/IdeaProjects/Hive123/metastore_db with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3d4eac69 
+Loaded from file:/Users/patrickbrown/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
+java.vendor=AdoptOpenJDK
+java.runtime.version=13.0.2+8
+user.dir=/Users/patrickbrown/IdeaProjects/Hive123
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.16
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
