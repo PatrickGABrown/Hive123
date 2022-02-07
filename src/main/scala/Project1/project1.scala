@@ -58,7 +58,7 @@ object project1 {
     //spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE Bev_BranchB")
     //spark.sql("SELECT * FROM Bev_BranchB").show()
     //spark.sql("SELECT COUNT(bDrink) FROM Bev_BranchB").show()
-    //spark.sql("SELECT * FROM Bev_BranchB WHERE bBranch = 'Branch8' AND bDrink = 'SMALL_Lite'").show()
+    //spark.sql("SELECT * FROM Bev_BranchB WHERE branch = 'Branch8' AND drink LIKE '%MOCHA%'").show()
 
     //Bev_BranchC
     //spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchC.txt' INTO TABLE Bev_BranchC")
@@ -84,8 +84,6 @@ object project1 {
     //Get the sum of all the counts for Branch 1
     spark.sql("SELECT SUM(count) FROM Branch1count").show()
 
-     */
-
     //Select all the beverages in Branch 2
     spark.sql("CREATE TABLE IF NOT EXISTS Branch2drink AS SELECT * FROM Bev_BranchA WHERE branch = 'Branch2'")
     spark.sql("INSERT INTO TABLE Branch2drink SELECT * FROM Bev_BranchB WHERE branch = 'Branch2'")
@@ -103,11 +101,73 @@ object project1 {
     //Get the sum of all the counts for Branch 2
     spark.sql("SELECT SUM(count) FROM Branch2count").show()
 
+     */
+    //QUESTION 2:
+    //Use the Branch1count table made from question one and group by and order by to show all the
+    //drinks with their consumer numbers instead of just the total sum.
+    //Use a limit and a desc to limit it to only the top answer.
+    //spark.sql("SELECT drink, SUM(count) FROM Branch1count GROUP BY drink ORDER BY SUM(count) DESC LIMIT 1").show()
+
+    //QUESTION 3:
+    /*
+    spark.sql("CREATE TABLE IF NOT EXISTS Branch1810drink AS SELECT drink, branch FROM \n" +
+      "(SELECT * FROM Bev_BranchA WHERE branch = 'Branch1'\n" +
+      " OR branch = 'Branch8' OR branch = 'Branch10' UNION \n" +
+      "SELECT * FROM Bev_BranchB WHERE branch = 'Branch1'\n" +
+      " OR branch = 'Branch8' OR branch = 'Branch10' UNION \n" +
+      "SELECT * FROM Bev_BranchC WHERE branch = 'Branch1'\n" +
+      " OR branch = 'Branch8' OR branch = 'Branch10')" )
+    spark.sql("SELECT * FROM Branch1810drink").show(100)
+
+     */
+
+
+    /*
+    //All drinks available in branch 4
+    spark.sql("CREATE TABLE IF NOT EXISTS Branch4drink AS SELECT * FROM Bev_BranchA WHERE branch = 'Branch4'")
+    spark.sql("INSERT INTO TABLE Branch2drink SELECT * FROM Bev_BranchB WHERE branch = 'Branch4'")
+    spark.sql("INSERT INTO TABLE Branch2drink SELECT * FROM Bev_BranchC WHERE branch = 'Branch4'")
+    //All drinks available in branch 7
+    spark.sql("CREATE TABLE IF NOT EXISTS Branch7drink AS SELECT * FROM Bev_BranchA WHERE branch = 'Branch7'")
+    spark.sql("INSERT INTO TABLE Branch2drink SELECT * FROM Bev_BranchB WHERE branch = 'Branch7'")
+    spark.sql("INSERT INTO TABLE Branch2drink SELECT * FROM Bev_BranchC WHERE branch = 'Branch7'")
+    //COMBINE
+    spark.sql("SELECT Branch7drink.drink FROM Branch4drink INNER JOIN Branch7drink ON Branch4drink.drink = Branch7drink.drink\n" +
+    " ")
+
+     */
+
+    //spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','");
+    //spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE AllBranchDrinks")
+    //spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE AllBranchDrinks")
+    //spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchC.txt' INTO TABLE AllBranchDrinks")
+    /*
+    spark.sql("SELECT DISTINCT(drink) FROM AllBranchDrinks WHERE drink IN\n" +
+      " (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch4')\n" +
+      " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')").show()
+
+     */
+
+    //QUESTION 4
+    /*
+    spark.sql("CREATE VIEW Branch4and7DrinksView AS SELECT DISTINCT(drink) FROM AllBranchDrinks WHERE drink IN\n" +
+      " (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch4')\n" +
+      " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')")
+
+     */
+    spark.sql("SELECT * FROM Branch4and7DrinksView").show()
 
 
 
-    //spark.sql("DROP TABLE Branch1drink")
-    //spark.sql("DROP TABLE Branch1count")
+
+
+    //spark.sql("DROP TABLE IF EXISTS Branch1drink")
+    //spark.sql("DROP TABLE IF EXISTS Branch1count")
+    //spark.sql("DROP TABLE IF EXISTS Branch2drink")
+    //spark.sql("DROP TABlE IF EXISTS Branch2count")
+    //spark.sql("DROP TABLE IF EXISTS Branch4drink")
+    //spark.sql("DROP TABlE IF EXISTS Branch7drink")
+    //spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
 
 
 
