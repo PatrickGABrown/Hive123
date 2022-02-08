@@ -123,6 +123,8 @@ object Main {
       println("The most consumed beverage on Branch 2 is ")
       spark.sql("SELECT drink, SUM(count) FROM Branch2count GROUP BY drink ORDER BY SUM(count) DESC LIMIT 1").show()
 
+      //AVERAGE CONSUMED BEVERAGE FOR A BRANCH
+      //NOT WORKING!
       println("The average consumed beverage from Branch 2 is ")
       spark.sql("SELECT drink, AVG(count) FROM Branch2count GROUP BY drink").show()
       //call method to start the app over
@@ -212,7 +214,7 @@ object Main {
       //spark.sql("show tblproperties ConsCountC").show()
 
       //Remove a row from a table
-
+      //NOT WORKING!
       spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
       spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','");
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE AllBranchDrinks")
