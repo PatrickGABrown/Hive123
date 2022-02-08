@@ -1,8 +1,11 @@
 package Project1
 
 import Project1.MenuDetails._
+
 import scala.io.StdIn.readLine
 import org.apache.spark.sql.SparkSession
+
+import scala.annotation.tailrec
 
 
 object Main {
@@ -16,6 +19,8 @@ object Main {
       .enableHiveSupport()
       .getOrCreate()
     println("created spark session")
+
+    //spark.sql("set spark.hadoop.hive.exec.dynamic.partition.mode=nonstrict")
 
     //CREATING TABLES FOR BRANCH DRINKS
     /*
@@ -119,14 +124,16 @@ object Main {
 
       //Use the Branch2count table made from question one and group by and order by to show all the
       //drinks with their consumer numbers instead of just the total sum.
-      //Use a limit and a desc to limit it to only the top answer.
-      println("The most consumed beverage on Branch 2 is ")
-      spark.sql("SELECT drink, SUM(count) FROM Branch2count GROUP BY drink ORDER BY SUM(count) DESC LIMIT 1").show()
+      //Use a limit to limit it to only the top answer which should be the least consumed.
+      println("The least consumed beverage on Branch 2 is ")
+      spark.sql("SELECT drink, SUM(count) FROM Branch2count GROUP BY drink ORDER BY SUM(count) LIMIT 1").show()
 
       //AVERAGE CONSUMED BEVERAGE FOR A BRANCH
       //NOT WORKING!
-      println("The average consumed beverage from Branch 2 is ")
-      spark.sql("SELECT drink, AVG(count) FROM Branch2count GROUP BY drink").show()
+      //println("The average consumed beverage from Branch 2 is ")
+      //spark.sql("SELECT drink, AVG(count) FROM Branch2count GROUP BY drink").show()
+      println("The average number of beverages consumed from Branch 2 is ")
+      spark.sql("SELECT AVG(count) FROM Branch2count").show()
       //call method to start the app over
       startOver()
     }
@@ -146,7 +153,7 @@ object Main {
       spark.sql("SELECT * FROM Branch1810drink").show(100)
 
       spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
-      spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','");
+      spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE AllBranchDrinks")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE AllBranchDrinks")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchC.txt' INTO TABLE AllBranchDrinks")
@@ -175,14 +182,31 @@ object Main {
       spark.sql("SELECT * FROM partitioned3Table").show()
 
        */
+      spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
+      spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','")
+      spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE AllBranchDrinks")
+      spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE AllBranchDrinks")
+      spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchC.txt' INTO TABLE AllBranchDrinks")
+      spark.sql("set hive.exec.dynamic.partition.mode=nonstrict")
+      //spark.sql("SELECT * FROM Bev_BranchA").show()
+      spark.sql("CREATE TABLE IF NOT EXISTS partBranch(drink String) PARTITIONED BY (branch String)")
+      spark.sql("INSERT OVERWRITE TABLE partBranch PARTITION (branch) SELECT drink, branch FROM AllBranchDrinks")
+      println("The table AllBranchDrinks is now partitioned on branch name")
+      spark.sql("SELECT * FROM partBranch").show()
+
+      println("Here is information about the partitioned table:")
+      spark.sql("DESCRIBE FORMATTED partBranch").show()
 
       //Create View on scenario 3
+      /*
       spark.sql("DROP VIEW IF EXISTS Branch4and7DrinksView")
       spark.sql("CREATE VIEW IF NOT EXISTS Branch4and7DrinksView AS SELECT DISTINCT(drink) FROM AllBranchDrinks WHERE drink IN\n" +
         " (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch4')\n" +
         " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')")
       println("This is the view for part 2 of question 3")
       spark.sql("SELECT * FROM Branch4and7DrinksView").show()
+
+       */
 
       //Calls method to start app over.
       startOver()
@@ -191,6 +215,7 @@ object Main {
     //QUESTION 5 METHOD:
     def p5func(): Unit = {
       println("QUESTION 5 ANSWERS:")
+      //CREATING NOTES
       spark.sql("ALTER TABLE Bev_BranchA SET tblproperties('notes' = 'These are the drinks offered in each branch in the A group')")
       //spark.sql("ALTER TABLE Bev_BranchB SET tblproperties('notes' = 'These are the drinks offered in each branch in the B group')")
       //spark.sql("ALTER TABLE Bev_BranchC SET tblproperties('notes' = 'These are the drinks offered in each branch in the C group')")
@@ -198,6 +223,7 @@ object Main {
       //spark.sql("ALTER TABLE ConsCountB SET tblproperties('notes' = 'This is the consumer count for group B')")
       //spark.sql("ALTER TABLE ConsCountB SET tblproperties('notes' = 'This is the consumer count for group C')")
 
+      //CREATING COMMENTS
       spark.sql("ALTER TABLE Bev_BranchA SET tblproperties('comments' = 'This is a comment.')")
       //spark.sql("ALTER TABLE Bev_BranchB SET tblproperties('comments' = '')")
       //spark.sql("ALTER TABLE Bev_BranchC SET tblproperties('comments' = '')")
@@ -205,8 +231,9 @@ object Main {
       //spark.sql("ALTER TABLE ConsCountB SET tblproperties('comments' = '')")
       //spark.sql("ALTER TABLE ConsCountC SET tblproperties('comments' = '')")
 
+      //DISPLAY TABLE PROPERTIES
       println("New table properties added to Bev_BranchA table: ")
-      spark.sql("show tblproperties Bev_BranchA").show()
+      //spark.sql("show tblproperties Bev_BranchA").show()
       //spark.sql("show tblproperties Bev_BranchB").show()
       //spark.sql("show tblproperties Bev_BranchC").show()
       //spark.sql("show tblproperties ConsCountA").show()
@@ -214,9 +241,9 @@ object Main {
       //spark.sql("show tblproperties ConsCountC").show()
 
       //Remove a row from a table
-      //NOT WORKING!
+      //Recreate the view from scenario 3
       spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
-      spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','");
+      spark.sql("CREATE TABLE IF NOT EXISTS AllBranchDrinks(drink String, branch String) row format delimited fields terminated by ','")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE AllBranchDrinks")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE AllBranchDrinks")
       spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchC.txt' INTO TABLE AllBranchDrinks")
@@ -224,23 +251,23 @@ object Main {
       spark.sql("CREATE VIEW IF NOT EXISTS Branch4and7DrinksView AS SELECT DISTINCT(drink) FROM AllBranchDrinks WHERE drink IN\n" +
         " (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch4')\n" +
         " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')")
-      spark.sql("select * from Branch4and7DrinksView").show()
-      /*
+      //spark.sql("select * from Branch4and7DrinksView ORDER BY drink DESC").show()
+      //Uses left join to remove an item from the view in scenario 3
       spark.sql("SELECT * FROM Branch4and7DrinksView LEFT JOIN \n" +
       "(SELECT * FROM Branch4and7DrinksView WHERE drink = 'Triple_cappuccino' ORDER BY drink DESC LIMIT 1) B ON \n +" +
         "Branch4and7DrinksView.drink = B.drink WHERE B.drink IS NULL").show()
-       */
-
 
       //Call method to start app over:
       startOver()
     }
 
+    //QUESTION 6 METHOD: FUTURE QUERY:
     def p6func(): Unit = {
       println("FUTURE QUERY!")
       startOver()
     }
 
+    //METHOD THAT DOES WHAT MAIN DOES
     def mainAgain(): Unit = {
       val optionMap = Map((1 -> "p1"), (2 -> "p2"), (3 -> "p3"), (4 -> "p4"), (5 -> "p5"), (6 -> "p6"))
       val menu = new Menu(optionMap)
@@ -257,6 +284,7 @@ object Main {
       }
     }
 
+    @tailrec
     def startOver(): Unit = {
       println(
         """
