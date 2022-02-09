@@ -317,6 +317,7 @@ object Main {
         |the data collected on the Coffee Shop's sales.
         |""".stripMargin)
     val optionMap = Map((1 -> "p1"), (2 -> "p2"), (3 -> "p3"), (4 -> "p4"), (5 -> "p5"), (6 -> "p6"))
+    //val optionMap = List((1,"p1"), (2,"p2"), (3,"p3"), (4,"p4"), (5,"p5"), (6,"p6"))
     val menu = new Menu(optionMap)
     menu.printMenu()
     val test = readLine("Enter a number for your option:").toInt
