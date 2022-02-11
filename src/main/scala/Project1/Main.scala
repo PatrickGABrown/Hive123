@@ -161,7 +161,7 @@ object Main {
       println("The common beverages available in Branches 4 and 7 are ")
       spark.sql("SELECT DISTINCT(drink) FROM AllBranchDrinks WHERE drink IN\n" +
         " (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch4')\n" +
-        " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')").show()
+        " AND drink IN (SELECT drink FROM AllBranchDrinks WHERE branch = 'Branch7')").show(100)
       //Call method to start the app over
       startOver()
     }
@@ -180,7 +180,7 @@ object Main {
       //spark.sql("SELECT * FROM Bev_BranchA").show()
       spark.sql("CREATE TABLE IF NOT EXISTS partBranch(drink String) PARTITIONED BY (branch String)")
       spark.sql("INSERT OVERWRITE TABLE partBranch PARTITION (branch) SELECT drink, branch FROM AllBranchDrinks")
-      println("The table AllBranchDrinks is now partitioned on branch name")
+      println("The table AllBranchDrinks is now partitioned on branch column")
       spark.sql("SELECT * FROM partBranch").show()
 
       println("Here is information about the partitioned table:")
@@ -260,6 +260,167 @@ object Main {
     //QUESTION 6 METHOD: FUTURE QUERY:
     def p6func(): Unit = {
       println("FUTURE QUERY!")
+      //basePrice TABLE WITH ALL THE PRICES FOR THE DRINKS
+      spark.sql("DROP TABLE IF EXISTS basePrice")
+      spark.sql("CREATE TABLE IF NOT EXISTS basePrice (drink String, price decimal(10, 2))")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_Lite', 4.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_LATTE', 4.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_cappuccino', 4.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_Espresso', 4.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_Coffee', 4.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Special_MOCHA', 4.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_Lite', 1.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_LATTE', 1.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_cappuccino', 1.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_Espresso', 1.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_Coffee', 1.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('SMALL_MOCHA', 1.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('MED_Lite', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('MED_LATTE', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('MED_cappuccino', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('MED_Espresso', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('MED_Coffee', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('MED_MOCHA', 2.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_Lite', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_LATTE', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_cappuccino', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_Espresso', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_Coffee', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('LARGE_MOCHA', 3.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_Lite', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_LATTE', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_cappuccino', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_Espresso', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_Coffee', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('ICY_MOCHA', 1.30)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_Lite', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_LATTE', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_cappuccino', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_Espresso', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_Coffee', 3.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Triple_MOCHA', 3.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_Lite', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_LATTE', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_cappuccino', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_Espresso', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_Coffee', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Mild_MOCHA', 1.30)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('Double_Lite', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Double_LATTE', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Double_cappuccino', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Double_Espresso', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Double_Coffee', 2.00)")
+      spark.sql("INSERT INTO basePrice VALUES ('Double_MOCHA', 2.00)")
+
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_Lite', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_LATTE', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_cappuccino', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_Espresso', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_Coffee', 1.30)")
+      spark.sql("INSERT INTO basePrice VALUES ('Cold_MOCHA', 1.30)")
+      //spark.sql("SELECT * FROM basePrice ORDER BY drink").show()
+
+      //NEW TABLE OF ALL A DRINKS AND COUNTS
+      spark.sql("DROP TABLE IF EXISTS AdrinkandCount")
+      spark.sql("CREATE TABLE IF NOT EXISTS AdrinkandCount (drink string, branch String, count int)")
+      spark.sql("INSERT INTO TABLE AdrinkandCount SELECT drink, branch, tc from \n" +
+        "(select ConsCountA.drink, branch, sum(ConsCountA.count)tc from \n" +
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
+        " JOIN ConsCountA ON (X.drink = ConsCountA.drink) GROUP BY ConsCountA.drink, X.branch)")
+      //spark.sql("SELECT sum(count) FROM AdrinkandCount where branch = 'Branch2'").show()
+      //spark.sql("ALTER TABLE AdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
+
+      //CREATE TABLE FOR REVANUE OF EACH DRINK IN A
+      spark.sql("DROP TABLE IF EXISTS aNew")
+      //spark.sql("CREATE TABLE IF NOT EXISTS aNew(drink string, branch string, count int, ")
+      spark.sql("CREATE TABLE IF NOT EXISTS aNew AS SELECT a.drink, a.branch, a.count, (x.price*a.count) as tRev\n" +
+        "from AdrinkandCount a inner join \n" +
+        "basePrice x on a.drink=x.drink order by a.drink")
+      //spark.sql("SELECT sum(count) FROM aNew where branch = 'Branch1'").show()
+      //spark.sql("select sum(count) from aNew").show()
+      //spark.sql("select * from aNew where drink = 'Cold_Coffee' order by drink").show()
+
+      //aRev has the max revenue for each drink in table A
+      spark.sql("drop table if exists aRev")
+      spark.sql("create table if not exists aRev as select sum(tRev) as rev, drink from aNew group by drink order by drink")
+      //spark.sql("select * from cRev").show()
+      //spark.sql("select max(d.sum), drink from (select sum(tRev), drink from cNew group by drink order by drink) d group by drink").show()
+      //spark.sql("select drink, rev from aRev where rev in (select max(rev) from aRev)").show()
+
+
+      //NEW TABLE FOR ALL DRINKS AND COUNTS FOR B
+      spark.sql("DROP TABLE IF EXISTS BdrinkandCount")
+      spark.sql("CREATE TABLE IF NOT EXISTS BdrinkandCount (drink string, branch String, count int)")
+      spark.sql("INSERT INTO TABLE BdrinkandCount SELECT drink, branch, tc from \n" +
+        "(select ConsCountB.drink, branch, sum(ConsCountB.count)tc from \n" +
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
+        " JOIN ConsCountB ON (X.drink = ConsCountB.drink) GROUP BY ConsCountB.drink, X.branch)")
+      //spark.sql("SELECT sum(count) FROM BdrinkandCount where branch = 'Branch1'").show()
+      //spark.sql("select * from BdrinkandCount").show()
+      spark.sql("ALTER TABLE BdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
+      //spark.sql("select * from BdrinkandCount").show()
+
+      //CREATE TABLE FOR REVANUE OF EACH DRINK IN B
+      spark.sql("DROP TABLE IF EXISTS bNew")
+      spark.sql("CREATE TABLE IF NOT EXISTS bNew AS SELECT b.drink, b.branch, b.count, (x.price*b.count) as tRev\n" +
+        "from BdrinkandCount b inner join \n" +
+        "basePrice x on b.drink=x.drink order by b.drink")
+      //spark.sql("SELECT sum(count) FROM bNew").show()
+      //spark.sql("select * from bNew where drink = 'Cold_Coffee' order by drink").show()
+
+      //bRev has the max revenue for each drink in table B
+      spark.sql("drop table if exists bRev")
+      spark.sql("create table if not exists bRev as select sum(tRev) as rev, drink from bNew group by drink order by drink")
+      //spark.sql("select * from cRev").show()
+      //spark.sql("select max(d.sum), drink from (select sum(tRev), drink from cNew group by drink order by drink) d group by drink").show()
+      //spark.sql("select drink, rev from bRev where rev in (select max(rev) from bRev)").show()
+
+
+      //NEW TABLE FOR ALL DRINKS AND COUNTS FOR C
+      spark.sql("DROP TABLE IF EXISTS CdrinkandCount")
+      spark.sql("CREATE TABLE IF NOT EXISTS CdrinkandCount (drink string, branch String, count int)")
+      spark.sql("INSERT INTO TABLE CdrinkandCount SELECT drink, branch, tc from \n" +
+        "(select ConsCountC.drink, branch, sum(ConsCountC.count)tc from \n" +
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
+        " JOIN ConsCountC ON (X.drink = ConsCountC.drink) GROUP BY ConsCountC.drink, X.branch)")
+      //spark.sql("SELECT sum(count) FROM CdrinkandCount where branch = 'Branch1'").show()
+      spark.sql("ALTER TABLE CdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
+      //spark.sql("select * from CdrinkandCount").show()
+
+      //CREATE TABLE FOR REVANUE OF EACH DRINK IN C
+      spark.sql("DROP TABLE IF EXISTS cNew")
+      spark.sql("CREATE TABLE IF NOT EXISTS cNew AS SELECT c.drink, c.branch, c.count, (x.price*c.count) as tRev\n" +
+        "from CdrinkandCount c inner join \n" +
+        "basePrice x on c.drink=x.drink order by c.drink")
+      //spark.sql("SELECT * FROM cNew'").show()
+      //spark.sql("SELECT sum(count) FROM cNew").show()
+
+      //cRev has the max revenue for each drink in table C
+      spark.sql("drop table if exists cRev")
+      spark.sql("create table if not exists cRev as select sum(tRev) as rev, drink from cNew group by drink order by drink")
+      //spark.sql("select * from cRev").show()
+      //spark.sql("select max(d.sum), drink from (select sum(tRev), drink from cNew group by drink order by drink) d group by drink").show()
+      //spark.sql("select drink, rev from cRev where rev in (select max(rev) from cRev)").show()
+
+      spark.sql("drop table if exists allRev")
+      spark.sql("create table if not exists allRev (drink String, branch String, count int, rev decimal (10, 2))")
+      spark.sql("insert into table allRev select * from aNew UNION ALL select * from bNew \n" +
+        "UNION ALL select * from cNew")
+      println("This is the table of all the drinks with the money that they made.")
+      spark.sql("select * from allRev").show()
+      println("The drink that made the most money is:")
+      spark.sql("select drink, branch, rev from allRev where rev in (select max(rev) from allRev)").show()
+      println("The drink that made the least amount of money is: ")
+      spark.sql("select DISTINCT drink, branch, rev from allRev where rev in (select min(rev) from allRev)").show()
+
+
       startOver()
     }
 

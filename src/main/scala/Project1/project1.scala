@@ -286,7 +286,7 @@ object project1 {
     spark.sql("create table if not exists aRev as select sum(tRev) as rev, drink from aNew group by drink order by drink")
     //spark.sql("select * from cRev").show()
     //spark.sql("select max(d.sum), drink from (select sum(tRev), drink from cNew group by drink order by drink) d group by drink").show()
-    spark.sql("select drink, rev from aRev where rev in (select max(rev) from aRev)").show()
+    //spark.sql("select drink, rev from aRev where rev in (select max(rev) from aRev)").show()
 
 
     //NEW TABLE FOR ALL DRINKS AND COUNTS FOR B
@@ -347,8 +347,16 @@ object project1 {
     spark.sql("create table if not exists allRev (drink String, branch String, count int, rev decimal (10, 2))")
     spark.sql("insert into table allRev select * from aNew UNION ALL select * from bNew \n" +
     "UNION ALL select * from cNew")
-    //spark.sql("select * from allRev").show()
+    //spark.sql("select * from allRev order by drink").show(1200)
     //spark.sql("select drink, rev from allRev where rev in (select max(rev) from allRev)").show()
+
+    //val col = Seq("drink", "branch", "count", "rev")
+    //import spark.implicits._
+    //val df = ""
+    //df.write.csv.save("/input/allRev")
+
+    //spark.sql("insert overwrite local directory 'input/final' \n" +
+      //"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select * from allRev")
 
 
 
