@@ -134,7 +134,6 @@ object Main {
       spark.sql("SELECT drink, SUM(count) FROM Branch2count GROUP BY drink ORDER BY SUM(count) LIMIT 1").show()
 
       //AVERAGE CONSUMED BEVERAGE FOR A BRANCH
-      //NOT WORKING!
       //println("The average consumed beverage from Branch 2 is ")
       //spark.sql("SELECT drink, AVG(count) FROM Branch2count GROUP BY drink").show()
       println("The average number of beverages consumed from Branch 2 is ")
