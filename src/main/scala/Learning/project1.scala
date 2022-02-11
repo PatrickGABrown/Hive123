@@ -1,8 +1,6 @@
-package Project1
-
+package Learning
 
 import org.apache.spark.sql.SparkSession
-//import spark.implicits._
 
 object project1 {
   def main(args: Array[String]): Unit = {
@@ -160,7 +158,6 @@ object project1 {
     //-------------------------------------------------------------------------------------------------------------
 
 
-
     //basePrice TABLE WITH ALL THE PRICES FOR THE DRINKS
     spark.sql("DROP TABLE IF EXISTS basePrice")
     spark.sql("CREATE TABLE IF NOT EXISTS basePrice (drink String, price decimal(10, 2))")
@@ -229,7 +226,6 @@ object project1 {
     //spark.sql("SELECT * FROM basePrice ORDER BY drink").show()
 
 
-
     /*
     //OLD TABLE OF ALL A DRINKS AND COUNTS
     spark.sql("DROP TABLE IF EXISTS AdrinkandCount")
@@ -276,7 +272,7 @@ object project1 {
     //spark.sql("CREATE TABLE IF NOT EXISTS aNew(drink string, branch string, count int, ")
     spark.sql("CREATE TABLE IF NOT EXISTS aNew AS SELECT a.drink, a.branch, a.count, (x.price*a.count) as tRev\n" +
       "from AdrinkandCount a inner join \n" +
-    "basePrice x on a.drink=x.drink order by a.drink")
+      "basePrice x on a.drink=x.drink order by a.drink")
     //spark.sql("SELECT sum(count) FROM aNew where branch = 'Branch1'").show()
     //spark.sql("select sum(count) from aNew").show()
     //spark.sql("select * from aNew where drink = 'Cold_Coffee' order by drink").show()
@@ -305,7 +301,7 @@ object project1 {
     spark.sql("DROP TABLE IF EXISTS bNew")
     spark.sql("CREATE TABLE IF NOT EXISTS bNew AS SELECT b.drink, b.branch, b.count, (x.price*b.count) as tRev\n" +
       "from BdrinkandCount b inner join \n" +
-    "basePrice x on b.drink=x.drink order by b.drink")
+      "basePrice x on b.drink=x.drink order by b.drink")
     //spark.sql("SELECT sum(count) FROM bNew").show()
     //spark.sql("select * from bNew where drink = 'Cold_Coffee' order by drink").show()
 
@@ -332,7 +328,7 @@ object project1 {
     spark.sql("DROP TABLE IF EXISTS cNew")
     spark.sql("CREATE TABLE IF NOT EXISTS cNew AS SELECT c.drink, c.branch, c.count, (x.price*c.count) as tRev\n" +
       "from CdrinkandCount c inner join \n" +
-    "basePrice x on c.drink=x.drink order by c.drink")
+      "basePrice x on c.drink=x.drink order by c.drink")
     //spark.sql("SELECT * FROM cNew'").show()
     //spark.sql("SELECT sum(count) FROM cNew").show()
 
@@ -346,7 +342,7 @@ object project1 {
     spark.sql("drop table if exists allRev")
     spark.sql("create table if not exists allRev (drink String, branch String, count int, rev decimal (10, 2))")
     spark.sql("insert into table allRev select * from aNew UNION ALL select * from bNew \n" +
-    "UNION ALL select * from cNew")
+      "UNION ALL select * from cNew")
     //spark.sql("select * from allRev order by drink").show(1200)
     //spark.sql("select drink, rev from allRev where rev in (select max(rev) from allRev)").show()
 
@@ -356,12 +352,7 @@ object project1 {
     //df.write.csv.save("/input/allRev")
 
     //spark.sql("insert overwrite local directory 'input/final' \n" +
-      //"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select * from allRev")
-
-
-
-
-
+    //"ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select * from allRev")
 
 
     //spark.sql("select * from ConsCountA").show()
@@ -541,11 +532,6 @@ object project1 {
     //FUTURE QUERY:
 
 
-
-
-
-
-
     //spark.sql("DROP TABLE IF EXISTS Branch1drink")
     //spark.sql("DROP TABLE IF EXISTS Branch1count")
     //spark.sql("DROP TABLE IF EXISTS Branch2drink")
@@ -555,7 +541,6 @@ object project1 {
     //spark.sql("DROP TABLE IF EXISTS AllBranchDrinks")
 
 
-
     //CODE TO REMOVE MY TABLE TO START OVER:
     //spark.sql("DROP TABLE IF EXISTS Bev_BranchA")
     //spark.sql("DROP TABLE IF EXISTS Bev_BranchB")
@@ -563,4 +548,3 @@ object project1 {
   }
 
 }
-
