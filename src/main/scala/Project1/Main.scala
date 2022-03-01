@@ -133,7 +133,7 @@ object Main {
       println("The least consumed beverage on Branch 2 is ")
       spark.sql("SELECT drink, SUM(count) FROM Branch2count GROUP BY drink ORDER BY SUM(count) LIMIT 1").show()
 
-      //AVERAGE CONSUMED BEVERAGE FOR A BRANCH
+      //AVERAGE OF CONSUMED BEVERAGES FOR A BRANCH
       //println("The average consumed beverage from Branch 2 is ")
       //spark.sql("SELECT drink, AVG(count) FROM Branch2count GROUP BY drink").show()
       println("The average number of beverages consumed from Branch 2 is ")
@@ -205,6 +205,9 @@ object Main {
     def p5func(): Unit = {
       println("QUESTION 5 ANSWERS:")
       //CREATING NOTES
+      println("Bev_BranchA table before changes: ")
+      spark.sql("show tblproperties Bev_BranchA").show()
+
       spark.sql("ALTER TABLE Bev_BranchA SET tblproperties('notes' = 'These are the drinks offered in each branch in the A group')")
       //spark.sql("ALTER TABLE Bev_BranchB SET tblproperties('notes' = 'These are the drinks offered in each branch in the B group')")
       //spark.sql("ALTER TABLE Bev_BranchC SET tblproperties('notes' = 'These are the drinks offered in each branch in the C group')")
@@ -335,8 +338,8 @@ object Main {
       spark.sql("CREATE TABLE IF NOT EXISTS AdrinkandCount (drink string, branch String, count int)")
       spark.sql("INSERT INTO TABLE AdrinkandCount SELECT drink, branch, tc from \n" +
         "(select ConsCountA.drink, branch, sum(ConsCountA.count)tc from \n" +
-        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
-        " JOIN ConsCountA ON (X.drink = ConsCountA.drink) GROUP BY ConsCountA.drink, X.branch)")
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * \n" +
+        " from Bev_BranchC)) X JOIN ConsCountA ON (X.drink = ConsCountA.drink) GROUP BY ConsCountA.drink, X.branch)")
       //spark.sql("SELECT sum(count) FROM AdrinkandCount where branch = 'Branch2'").show()
       //spark.sql("ALTER TABLE AdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
 
@@ -363,8 +366,8 @@ object Main {
       spark.sql("CREATE TABLE IF NOT EXISTS BdrinkandCount (drink string, branch String, count int)")
       spark.sql("INSERT INTO TABLE BdrinkandCount SELECT drink, branch, tc from \n" +
         "(select ConsCountB.drink, branch, sum(ConsCountB.count)tc from \n" +
-        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
-        " JOIN ConsCountB ON (X.drink = ConsCountB.drink) GROUP BY ConsCountB.drink, X.branch)")
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from \n" +
+        "Bev_BranchC)) X JOIN ConsCountB ON (X.drink = ConsCountB.drink) GROUP BY ConsCountB.drink, X.branch)")
       //spark.sql("SELECT sum(count) FROM BdrinkandCount where branch = 'Branch1'").show()
       //spark.sql("select * from BdrinkandCount").show()
       spark.sql("ALTER TABLE BdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
@@ -391,8 +394,8 @@ object Main {
       spark.sql("CREATE TABLE IF NOT EXISTS CdrinkandCount (drink string, branch String, count int)")
       spark.sql("INSERT INTO TABLE CdrinkandCount SELECT drink, branch, tc from \n" +
         "(select ConsCountC.drink, branch, sum(ConsCountC.count)tc from \n" +
-        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from Bev_BranchC)) X \n" +
-        " JOIN ConsCountC ON (X.drink = ConsCountC.drink) GROUP BY ConsCountC.drink, X.branch)")
+        "(select drink, branch from (select * from Bev_BranchA UNION ALL select * from Bev_BranchB UNION ALL select * from \n" +
+        "Bev_BranchC)) X JOIN ConsCountC ON (X.drink = ConsCountC.drink) GROUP BY ConsCountC.drink, X.branch)")
       //spark.sql("SELECT sum(count) FROM CdrinkandCount where branch = 'Branch1'").show()
       spark.sql("ALTER TABLE CdrinkandCount ADD COLUMN price DECIMAL(10, 2) AFTER count")
       //spark.sql("select * from CdrinkandCount").show()

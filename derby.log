@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Fri Feb 11 01:37:36 EST 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017e-e780-5aea-0000029e88a8 
+Fri Feb 11 12:45:23 EST 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-017e-e9e3-bdc7-0000015bc448 
 on database directory /Users/patrickbrown/IdeaProjects/Hive123/metastore_db with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@3d4eac69 
 Loaded from file:/Users/patrickbrown/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=AdoptOpenJDK
