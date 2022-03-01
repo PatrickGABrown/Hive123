@@ -5,7 +5,7 @@ ThisBuild / scalaVersion := "2.13.8"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "Hive123"
+    name := "P1"
   )
 
 //was 3.2.0
