@@ -1,13 +1,17 @@
 # Coffee Shop Data Analysis
 
 ## Prompt
-Sample-HIVE-Project This project is mainly for learning and practicing simple HIVE commands in real time scenarios. Here we have taken some sample coffee shop data and processed some essential queries to demonstrate HDFS & HIVE commands. Using Spark and Scala With Coffee shop data.
+Sample-HIVE-Project:
+This project is mainly for learning and practicing simple HIVE commands in real time scenarios. Here we have taken some sample coffee shop data and processed some essential queries to demonstrate HDFS & HIVE commands. Using Spark and Scala With Coffee shop data.
+
+## Project Description
+We were given CSV files with sample data about a Coffee Shop including beverages associated with different branches of the shop and files with consumer count numbers for the different beverages. We were tasked with running HIVE queries against the data to make useful analysis of it. There were some initial queries we were asked to create and implement to find basic information such as the total number of consumers for a specific branch or the common beverages between different branches. After that we had to come up with our own query that would display data that we could use to predict trends in the Coffee Shop. After completing the queries, we utilized a visualization tool such as Excel of Zeppelin to create graphical displays of our tables and see the trends.
 
 ## Technologies Used
 - IntelliJ IDE with SBT(1.6.2)
 - Scala Programming Language (scala 2.13.8)
 - Spark lib dependencies (spark v.3.2.0)
-- Spark Session which enable Hive support (hive v.2.3.9)
+- Spark Session which enable HIVE support (hive v.2.3.9)
 - Microsoft Excel for visualization
 
 ## Features
