@@ -25,7 +25,7 @@ To-do list:
 - Get more creative with visualization
 
 ## Getting Started
-Use the git clone command in your terminal to clone this repo and be able to use it in your IDE:
+Use the git clone command in your terminal to clone this repo and be able to use it in an IntelliJ IDE:
 ```
 git clone https://github.com/PatrickGABrown/P1.git
 ```
