@@ -20,6 +20,14 @@ To-do list:
 - Optimize the code
 - Get more creative with visualization
 
+## Getting Started
+Use the git clone command in your terminal to clone this repo and be able to use it in your IDE:
+```
+git clone 
+```
+
 ## Usage
-Once you clone the repo, the main object is located in the 
+Once you clone the repo, the main object is located in the Project1 directory in the src/main/scala path.
+All of the CSV files used are located in the input directory.
+Once you run the project it will boot up the menu which you can follow to see different query results.
 
