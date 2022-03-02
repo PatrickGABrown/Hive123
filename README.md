@@ -4,7 +4,7 @@
 Sample-HIVE-Project This project is mainly for learning and practicing simple HIVE commands in real time scenarios. Here we have taken some sample coffee shop data and processed some essential queries to demonstrate HDFS & HIVE commands. Using Spark and Scala With Coffee shop data.
 
 ## Technologies Used
-- IntelliJ IDE
+- IntelliJ IDE with SBT(1.6.2)
 - Scala Programming Language (scala 2.13.8)
 - Spark lib dependencies (spark v.3.2.0)
 - Spark Session which enable Hive support (hive v.2.3.9)
@@ -23,7 +23,7 @@ To-do list:
 ## Getting Started
 Use the git clone command in your terminal to clone this repo and be able to use it in your IDE:
 ```
-git clone 
+git clone https://github.com/PatrickGABrown/P1.git
 ```
 
 ## Usage
